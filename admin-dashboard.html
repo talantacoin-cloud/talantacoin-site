@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TalantaCoin Admin Dashboard</title>
+<style>
+  body { margin:0; font-family: Arial,sans-serif; background-color:#000; color:#fff; }
+  header { background-color:#1a1a1a; padding:20px; text-align:center; }
+  header h1 { color:#ff0000; margin:0; }
+  nav { display:flex; justify-content:center; background-color:#111; padding:10px; flex-wrap:wrap; }
+  nav button { margin:5px; padding:10px 20px; background:#ff0000; color:#fff; border:none; cursor:pointer; transition:0.3s; }
+  nav button:hover { background:#ffff00; color:#000; }
+  main { padding:20px; }
+  section { margin-bottom:30px; border:1px solid #333; padding:15px; border-radius:8px; }
+  table { width:100%; border-collapse:collapse; margin-top:10px; }
+  th, td { border:1px solid #fff; padding:8px; text-align:left; }
+  th { background:#111; color:#ff0000; }
+  td button { margin-right:5px; padding:3px 8px; }
+  input, select, textarea { padding:5px; margin:5px 0; width:100%; max-width:300px; }
+  .hidden { display:none; }
+  .draggable { cursor:move; margin-bottom:10px; padding:10px; border:1px dashed #fff; border-radius:5px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>TalantaCoin Admin Dashboard</h1>
+</header>
+
+<nav>
+  <button onclick="showSection('admins')">Manage Admins</button>
+  <button onclick="showSection('logs')">Login Logs</button>
+  <button onclick="showSection('content')">Manage Content</button>
+  <button onclick="showSection('layout')">Layout & Theme</button>
+</nav>
+
+<main>
+
+<!-- مدیریت ادمین ها -->
+<section id="admins" class="hidden">
+  <h2>Admins</h2>
+  <input type="text" id="newAdmin" placeholder="New Admin Username">
+  <button onclick="addAdmin()">Add Admin</button>
+  <table>
+    <thead><tr><th>Username</th><th>Actions</th></tr></thead>
+    <tbody id="adminList"></tbody>
+  </table>
+</section>
+
+<!-- گزارش ورود -->
+<section id="logs" class="hidden">
+  <h2>Login Logs</h2>
+  <table>
+    <thead><tr><th>Date/Time</th><th>Username</th><th>Status</th></tr></thead>
+    <tbody id="logList"></tbody>
+  </table>
+</section>
+
+<!-- مدیریت محتوا -->
+<section id="content" class="hidden">
+  <h2>Content Management</h2>
+  <h3>Site Text</h3>
+  <textarea id="siteText" rows="4">Welcome to TalantaCoin!</textarea><br>
+  <button onclick="updateContent()">Update Text</button>
+
+  <h3>Links</h3>
+  <input type="text" id="newLinkText" placeholder="Link Text">
+  <input type="text" id="newLinkURL" placeholder="Link URL">
+  <button onclick="addLink()">Add Link</button>
+  <ul id="linkList"></ul>
+
+  <h3>Images</h3>
+  <input type="text" id="newImageURL" placeholder="Image URL">
+  <button onclick="updateLogo()">Update Logo</button>
+  <img id="previewLogo" src="" alt="Preview" style="max-width:150px; display:block; margin-top:10px;">
+</section>
+
+<!-- مدیریت چیدمان و تم -->
+<section id="layout" class="hidden">
+  <h2>Layout & Theme</h2>
+  <h3>Drag & Drop Sections</h3>
+  <div id="layoutSections">
+    <div class="draggable" draggable="true" id="secText">Site Text</div>
+    <div class="draggable" draggable="true" id="secLinks">Links</div>
+    <div class="draggable" draggable="true" id="secImages">Images</div>
+  </div>
+
+  <h3>Theme & Background</h3>
+  <label for="bgColor">Background Color:</label>
+  <input type="color" id="bgColor" value="#000000" onchange="updateBackground()">
+  <label for="textColor">Text Color:</label>
+  <input type="color" id="textColor" value="#ffffff" onchange="updateTextColor()">
+</section>
+
+</main>
+
+<script>
+let admins = ['mainAdmin'];
+let logs = [];
+let links = [];
+
+function showSection(sectionId){
+  document.querySelectorAll('main section').forEach(sec => sec.classList.add('hidden'));
+  document.getElementById(sectionId).classList.remove('hidden');
+  if(sectionId==='admins') renderAdmins();
+  if(sectionId==='logs') renderLogs();
+  if(sectionId==='content') renderLinks();
+}
+
+// Admin functions
+function renderAdmins(){
+  const tbody = document.getElementById('adminList');
+  tbody.innerHTML='';
+  admins.forEach(admin=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${admin}</td>
+      <td><button onclick="removeAdmin('${admin}')">Remove</button></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function addAdmin(){
+  const newAdmin=document.getElementById('newAdmin').value.trim();
+  if(newAdmin && !admins.includes(newAdmin)) admins.push(newAdmin);
+  document.getElementById('newAdmin').value='';
+  renderAdmins();
+}
+
+function removeAdmin(admin){
+  if(admin==='mainAdmin'){ alert('Cannot remove main admin'); return; }
+  admins=admins.filter(a=>a!==admin);
+  renderAdmins();
+}
+
+// Logs
+function renderLogs(){
+  const tbody=document.getElementById('logList');
+  tbody.innerHTML='';
+  logs.forEach(log=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${log.time}</td><td>${log.user}</td><td>${log.status}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// Content
+function updateContent(){ alert('Text updated: '+document.getElementById('siteText').value); }
+
+// Links
+function addLink(){
+  const text=document.getElementById('newLinkText').value.trim();
+  const url=document.getElementById('newLinkURL').value.trim();
+  if(text && url){ links.push({text,url}); renderLinks(); }
+  document.getElementById('newLinkText').value=''; document.getElementById('newLinkURL').value='';
+}
+function renderLinks(){
+  const ul=document.getElementById('linkList');
+  ul.innerHTML='';
+  links.forEach((link,index)=>{
+    const li=document.createElement('li');
+    li.innerHTML=`<a href="${link.url}" target="_blank">${link.text}</a>
+      <button onclick="removeLink(${index})">Remove</button>`;
+    ul.appendChild(li);
+  });
+}
+function removeLink(index){ links.splice(index,1); renderLinks(); }
+
+// Images
+function updateLogo(){
+  const url=document.getElementById('newImageURL').value.trim();
+  if(url){ document.getElementById('previewLogo').src=url; alert('Logo updated'); }
+}
+
+// Theme
+function updateBackground(){ document.body.style.backgroundColor=document.getElementById('bgColor').value; }
+function updateTextColor(){ document.body.style.color=document.getElementById('textColor').value; }
+
+// Sample logs
+logs.push({time:'2025-10-27 10:00', user:'mainAdmin', status:'Success'});
+logs.push({time:'2025-10-27 10:05', user:'hacker01', status:'Failed'});
+
+// Drag & Drop
+const draggables = document.querySelectorAll('.draggable');
+const container = document.getElementById('layoutSections');
+let dragged=null;
+draggables.forEach(d=>{
+  d.addEventListener('dragstart',()=>{dragged=d;});
+  d.addEventListener('dragover',e=>{e.preventDefault();});
+  d.addEventListener('drop',()=>{container.insertBefore(dragged,d);});
+});
+</script>
+
+</body>
+</html>
