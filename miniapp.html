@@ -1,214 +1,230 @@
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TalantaCoin</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Tahoma', sans-serif;
-      background: linear-gradient(to bottom right, #222, #444);
-      color: #fff;
-      text-align: center;
-    }
-    header img {
-      width: 120px;
-      margin-top: 20px;
-    }
-    header h1 {
-      font-size: 28px;
-      color: #ffcc00;
-    }
-    .auth-section, .dashboard {
-      margin: 30px auto;
-      max-width: 340px;
-      background: #333;
-      padding: 20px;
-      border-radius: 10px;
-    }
-    input, button {
-      width: 90%;
-      padding: 10px;
-      margin: 8px 0;
-      border-radius: 5px;
-      border: none;
-    }
-    button {
-      background: #ffcc00;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #ffd633;
-    }
-    .hidden {
-      display: none;
-    }
-    .mission {
-      margin: 15px;
-      background: #222;
-      padding: 10px;
-      border-radius: 10px;
-    }
-    .mission img {
-      width: 50px;
-      cursor: pointer;
-      transition: transform 0.3s;
-    }
-    .mission img:hover {
-      transform: scale(1.2);
-    }
-    .mission span {
-      font-weight: bold;
-      color: #ffcc00;
-      margin-left: 10px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TalantaCoin Mini App</title>
+<style>
+body {
+    margin:0;
+    font-family: Arial,sans-serif;
+    background: url('https://s6.uupload.ir/files/1000056953_myyj.png') no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;
+    text-align: center;
+}
+header { margin-top: 20px; }
+header img { width: 15%; /* سه برابر قبلی */ }
+header h1 { margin: 10px 0 5px 0; font-size: 28px; color: #ffcc00; }
+header p { font-size: 16px; }
+
+.auth-section, .dashboard {
+    margin: 20px auto;
+    max-width: 400px;
+    background: rgba(0,0,0,0.6);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+input, button {
+    padding: 10px;
+    margin: 8px 0;
+    width: 90%;
+    border-radius: 5px;
+    border: none;
+}
+
+button {
+    background: #ffcc00;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+button:hover { background:#ffd633; transform: scale(1.05); }
+
+.hidden { display:none; }
+
+.mission {
+    margin: 10px;
+    background: rgba(0,0,0,0.5);
+    padding: 10px;
+    border-radius: 10px;
+}
+.mission img {
+    width: 50px;
+    cursor: pointer;
+    vertical-align: middle;
+    transition: transform 0.3s;
+}
+.mission img:hover { transform: scale(1.2); }
+.mission span { font-weight:bold; color:#ffcc00; margin-left:10px; }
+</style>
 </head>
 <body>
 
 <header>
-  <img src="https://s6.uupload.ir/files/1761571561974_mpn7.png" alt="Logo">
-  <h1>TalantaCoin</h1>
+    <img src="https://s6.uupload.ir/files/1761571561974_mpn7.png" alt="TalantaCoin Logo">
+    <h1>TalantaCoin</h1>
+    <p>Complete missions to earn TALA and get rewards for referrals!</p>
 </header>
 
 <div class="auth-section" id="registerForm">
-  <h3>ثبت‌نام</h3>
-  <input type="email" id="regEmail" placeholder="ایمیل"><br>
-  <input type="password" id="regPass" placeholder="رمز عبور"><br>
-  <input type="password" id="regConfirm" placeholder="تأیید رمز"><br>
-  <button onclick="registerUser()">ثبت‌نام</button>
-  <button onclick="showLogin()">ورود</button>
+    <h3>Register</h3>
+    <input type="email" id="regEmail" placeholder="Email"><br>
+    <input type="password" id="regPass" placeholder="Password"><br>
+    <input type="password" id="regConfirm" placeholder="Confirm Password"><br>
+    <button onclick="registerUser()">Register</button>
+    <button onclick="showLogin()">Login</button>
 </div>
 
 <div class="auth-section hidden" id="loginForm">
-  <h3>ورود</h3>
-  <input type="email" id="loginEmail" placeholder="ایمیل"><br>
-  <input type="password" id="loginPass" placeholder="رمز عبور"><br>
-  <button onclick="loginUser()">ورود</button>
-  <button onclick="showRegister()">ثبت‌نام</button>
-  <button onclick="gmailLogin()">ورود با جیمیل</button>
+    <h3>Login</h3>
+    <input type="email" id="loginEmail" placeholder="Email"><br>
+    <input type="password" id="loginPass" placeholder="Password"><br>
+    <button onclick="loginUser()">Login</button>
+    <button onclick="showRegister()">Register</button>
+    <button onclick="gmailLogin()">Login with Gmail</button>
 </div>
 
 <div class="dashboard hidden" id="dashboard">
-  <h3>خوش آمدید!</h3>
-  <p id="welcomeText"></p>
-  <div id="missionsContainer"></div>
-  <button onclick="logout()">خروج</button>
+    <h3>Welcome!</h3>
+    <p id="welcomeText"></p>
+    <div id="missionsContainer"></div>
+    <p>Your referral link: <span id="refLink"></span></p>
+    <button onclick="logout()">Logout</button>
 </div>
 
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js"></script>
+
 <script>
-  const firebaseConfig = {
+const firebaseConfig = {
     apiKey: "YOUR_API_KEY",
     authDomain: "YOUR_PROJECT.firebaseapp.com",
     projectId: "YOUR_PROJECT",
     storageBucket: "YOUR_PROJECT.appspot.com",
     messagingSenderId: "YOUR_SENDER_ID",
     appId: "YOUR_APP_ID"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
 
-  const socialLinks = {
+const socialLinks = {
     youtube: "https://youtube.com/yourchannel",
     instagram: "https://instagram.com/yourpage",
     tiktok: "https://tiktok.com/@yourprofile",
     telegram: "https://t.me/yourchannel",
     x: "https://x.com/yourprofile"
-  };
+};
 
-  function showRegister() {
+const socialImgs = {
+    youtube: "https://s6.uupload.ir/files/1761565805692_xev1.png",
+    instagram: "https://s6.uupload.ir/files/1761565929838_lcd7.png",
+    tiktok: "https://s6.uupload.ir/files/1761565975760_37uu.png",
+    telegram: "https://s6.uupload.ir/files/1761566122776_0xlc.png",
+    x: "https://s6.uupload.ir/files/1761566178319_vj8h.png"
+};
+
+function showRegister(){
     document.getElementById('registerForm').classList.remove('hidden');
     document.getElementById('loginForm').classList.add('hidden');
     document.getElementById('dashboard').classList.add('hidden');
-  }
+}
 
-  function showLogin() {
+function showLogin(){
     document.getElementById('registerForm').classList.add('hidden');
     document.getElementById('loginForm').classList.remove('hidden');
     document.getElementById('dashboard').classList.add('hidden');
-  }
+}
 
-  function registerUser() {
+function registerUser(){
     const email = document.getElementById('regEmail').value.trim();
     const pass = document.getElementById('regPass').value.trim();
     const confirm = document.getElementById('regConfirm').value.trim();
-    if (!email || !pass || !confirm) return alert('لطفاً همه فیلدها را پر کنید.');
-    if (pass !== confirm) return alert('رمزها یکسان نیستند.');
+    if(!email || !pass || !confirm){ return alert('Fill all fields'); }
+    if(pass!==confirm){ return alert('Passwords do not match'); }
 
     auth.createUserWithEmailAndPassword(email, pass)
-      .then(userCredential => {
+    .then(userCredential=>{
         const user = userCredential.user;
         const missions = {};
-        Object.keys(socialLinks).forEach(p => missions[p] = { done: false, reward: 1 });
+        Object.keys(socialLinks).forEach(p=>missions[p]={done:false,reward:1});
         db.collection('users').doc(user.uid).set({
-          email: user.email,
-          tala: 0,
-          refLink: `https://yourapp.com/?ref=${btoa(user.email)}`,
-          missions: missions
+            email:user.email,
+            tala:0,
+            refLink:`https://yourapp.com/?ref=${btoa(user.email)}`,
+            missions:missions
         });
-        alert('ثبت‌نام موفق بود!');
+        alert('Registered successfully!');
         showDashboard(user);
-      })
-      .catch(error => alert(error.message));
-  }
+    })
+    .catch(err=>alert(err.message));
+}
 
-  function loginUser() {
-    const email = document.getElementById('loginEmail').value.trim();
-    const pass = document.getElementById('loginPass').value.trim();
-    auth.signInWithEmailAndPassword(email, pass)
-      .then(userCredential => showDashboard(userCredential.user))
-      .catch(error => alert('اطلاعات ورود اشتباه است.'));
-  }
+function loginUser(){
+    const email=document.getElementById('loginEmail').value.trim();
+    const pass=document.getElementById('loginPass').value.trim();
+    auth.signInWithEmailAndPassword(email,pass)
+    .then(userCredential=>showDashboard(userCredential.user))
+    .catch(err=>alert('Invalid login'));
+}
 
-  function gmailLogin() {
-    const provider = new firebase.auth.GoogleAuthProvider();
+function gmailLogin(){
+    const provider=new firebase.auth.GoogleAuthProvider();
     auth.signInWithPopup(provider)
-      .then(result => {
-        const user = result.user;
-        const userRef = db.collection('users').doc(user.uid);
-        userRef.get().then(doc => {
-          if (!doc.exists) {
-            const missions = {};
-            Object.keys(socialLinks).forEach(p => missions[p] = { done: false, reward: 1 });
-            userRef.set({
-              email: user.email,
-              tala: 0,
-              refLink: `https://yourapp.com/?ref=${btoa(user.email)}`,
-              missions: missions
-            });
-          }
-          showDashboard(user);
+    .then(result=>{
+        const user=result.user;
+        const userRef=db.collection('users').doc(user.uid);
+        userRef.get().then(doc=>{
+            if(!doc.exists){
+                const missions={};
+                Object.keys(socialLinks).forEach(p=>missions[p]={done:false,reward:1});
+                userRef.set({
+                    email:user.email,
+                    tala:0,
+                    refLink:`https://yourapp.com/?ref=${btoa(user.email)}`,
+                    missions:missions
+                });
+            }
+            showDashboard(user);
         });
-      })
-      .catch(error => alert('ورود با جیمیل ناموفق بود.'));
-  }
+    }).catch(err=>alert('Gmail login failed'));
+}
 
-  function showDashboard(user) {
+function showDashboard(user){
     document.getElementById('registerForm').classList.add('hidden');
     document.getElementById('loginForm').classList.add('hidden');
     document.getElementById('dashboard').classList.remove('hidden');
-    db.collection('users').doc(user.uid).get().then(doc => {
-      const data = doc.data();
-      document.getElementById('welcomeText').textContent = `کاربر: ${data.email} | TALA: ${data.tala}`;
-      const container = document.getElementById('missionsContainer');
-      container.innerHTML = '';
-      Object.entries(socialLinks).forEach(([platform, link]) => {
-        const reward = data.missions?.[platform]?.reward || 0;
-        const done = data.missions?.[platform]?.done;
-        const div = document.createElement('div');
-        div.className = 'mission';
-        div.innerHTML = `
-          <a href="${link}" target="_blank">
-            <img src="https://s6.uupload.ir/files/${platform}.png" alt="${platform}">
-          </a>
-          <span id="${platform}Reward">${reward} TALA</span>
-          ${!done ? `<button onclick="completeMission('${platform}')">انجام شد</button>` : ''}
-        `;
-        container.appendChild(div);
+    db.collection('users').doc(user.uid).get().then(doc=>{
+        const data=doc.data();
+        document.getElementById('welcomeText').textContent=`User: ${data.email} | TALA: ${data.tala}`;
+        document.getElementById('refLink').textContent=data.refLink;
+        const container=document.getElementById('missionsContainer');
+        container.innerHTML='';
+        Object.entries(socialLinks).forEach(([platform,link])=>{
+            const reward=data.missions?.[platform]?.reward || 0;
+            const done=data.missions?.[platform]?.done;
+            const div=document.createElement('div');
+            div.className='mission';
+            div.innerHTML=`
+            <a href="${link}" target="_blank">
+              <img src="${socialImgs[platform]}" alt="${platform}">
+            </a>
+            <span id="${platform}Reward">${reward} TALA</span>
+            ${!done?`<button onclick="completeMission('${platform}')">Complete</button>`:''}
+            `;
+            container.appendChild(div);
+        });
+    });
+}
+
+function completeMission(platform){
+    const user=auth.currentUser;
+    if(!user){ alert('Login first'); return; }
+    const userRef=db.collection('users').doc(user.uid);
+    userRef.get().then(doc=>{
+        const data=doc.data();
+        if(data.missions[platform].done){ alert('Mission already
