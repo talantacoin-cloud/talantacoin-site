@@ -3,163 +3,164 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TALA Mini App</title>
+<title>TalantaCoin Mini App</title>
 <style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
+body {
+    margin:0;
+    font-family: Arial,sans-serif;
     background: url('https://s6.uupload.ir/files/1000056953_myyj.png') no-repeat center center fixed;
     background-size: cover;
     color: #fff;
     text-align: center;
-  }
-  header {
-    margin-top: 20px;
-  }
-  #logo {
-    width: 5%;
-    min-width: 50px;
-    max-width: 80px;
-  }
-  h1 {
-    margin: 5px 0;
-    font-size: 1.8em;
-  }
-  p.description {
-    font-size: 1em;
-    margin: 5px 20px 20px 20px;
-  }
-  .social-container {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin: 20px 0;
-    flex-wrap: wrap;
-  }
-  .social-btn {
-    width: 60px;
-    height: 60px;
-    cursor: pointer;
-    border-radius: 10px;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .social-btn:hover {
-    transform: scale(1.2);
-    box-shadow: 0 0 15px #fff;
-  }
-  .reward {
-    font-size: 0.9em;
-    margin-top: 5px;
-  }
-  #totalTALA {
-    font-size: 1.5em;
-    margin: 15px 0;
-  }
-  button#walletBtn {
+}
+header { margin-top: 20px; }
+header img { width: 5%; }
+header h1 { margin: 10px 0 5px 0; font-size: 24px; color: #ff0000; }
+header p { font-size: 16px; }
+
+.auth-buttons, .social-buttons, .stats, .referral { margin: 20px 0; }
+
+button {
     padding: 10px 20px;
-    font-size: 1em;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    background-color: #ffcc00;
-    color: #000;
-    margin-bottom: 20px;
-    opacity: 0.5;
-  }
-  button#walletBtn:disabled {
-    cursor: not-allowed;
-  }
-  input[type="email"], input[type="password"] {
-    padding: 10px;
     margin: 5px;
-    width: 200px;
-    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
     border: none;
-  }
-  button#loginBtn {
-    padding: 10px 20px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+button:hover { transform: scale(1.1); box-shadow: 0 0 10px #ff0; }
+
+.social-buttons img {
+    width: 50px;
     margin: 10px;
     cursor: pointer;
+    vertical-align: middle;
+}
+.stats span { font-weight: bold; color: #ff0; }
+input {
+    padding: 8px;
+    margin: 5px;
+    border-radius: 5px;
     border: none;
-    border-radius: 8px;
-    background-color: #ffcc00;
-    color: #000;
-  }
+    width: 200px;
+}
+.hidden { display:none; }
 </style>
 </head>
 <body>
 
 <header>
-  <img id="logo" src="https://s6.uupload.ir/files/1761571561974_mpn7.png" alt="TalantaCoin Logo">
-  <h1>TalantaCoin</h1>
-  <p class="description">
-    Complete missions to earn 1 TALA per first-time task.<br>
-    Earn 0.5 TALA for each referral and every subsequent video mission.
-  </p>
+    <img src="https://s6.uupload.ir/files/1761571561974_mpn7.png" alt="TalantaCoin Logo">
+    <h1>TalantaCoin</h1>
+    <p>Complete missions to earn 1 TALA.<br>Earn 0.5 TALA per referral and per social media video view.</p>
 </header>
 
-<section id="loginSection">
-  <input type="email" id="email" placeholder="Enter your Gmail"><br>
-  <input type="password" id="password" placeholder="Password"><br>
-  <button id="loginBtn" onclick="loginUser()">Login / Sign Up</button>
-  <p id="loginMsg"></p>
-</section>
+<div class="auth-buttons">
+    <div id="registerDiv">
+        <h3>Register</h3>
+        <input type="email" id="regEmail" placeholder="Gmail"><br>
+        <input type="password" id="regPass" placeholder="Password"><br>
+        <button onclick="registerUser()">Register</button>
+    </div>
+    <div id="loginDiv" class="hidden">
+        <h3>Login</h3>
+        <input type="email" id="loginEmail" placeholder="Gmail"><br>
+        <input type="password" id="loginPass" placeholder="Password"><br>
+        <button onclick="loginUser()">Login</button>
+    </div>
+</div>
 
-<section id="appSection" style="display:none;">
-  <div id="totalTALA">Total TALA: 0</div>
-  <div class="social-container">
-    <div>
-      <img class="social-btn" src="https://s6.uupload.ir/files/1761565805692_xev1.png" onclick="earnTALA('YouTube')" alt="YouTube">
-      <div class="reward">+1 TALA</div>
-    </div>
-    <div>
-      <img class="social-btn" src="https://s6.uupload.ir/files/1761566178319_vj8h.png" onclick="earnTALA('Instagram')" alt="Instagram">
-      <div class="reward">+0.5 TALA</div>
-    </div>
-    <div>
-      <img class="social-btn" src="https://s6.uupload.ir/files/1761565929838_lcd7.png" onclick="earnTALA('TikTok')" alt="TikTok">
-      <div class="reward">+0.5 TALA</div>
-    </div>
-    <div>
-      <img class="social-btn" src="https://s6.uupload.ir/files/1761566122776_0xlc.png" onclick="earnTALA('Telegram')" alt="Telegram">
-      <div class="reward">+0.5 TALA</div>
-    </div>
-    <div>
-      <img class="social-btn" src="https://s6.uupload.ir/files/1761565975760_37uu.png" onclick="earnTALA('X')" alt="X">
-      <div class="reward">+0.5 TALA</div>
-    </div>
-  </div>
-  <button id="walletBtn" disabled>Connect Wallet (Coming Soon)</button>
-</section>
+<div class="stats hidden" id="userStats">
+    <p>Total TALA: <span id="totalTALA">0</span></p>
+</div>
+
+<div class="social-buttons hidden" id="socialButtons">
+    <img src="https://s6.uupload.ir/files/1761565805692_xev1.png" alt="YouTube" onclick="completeMission('youtube',1)">
+    <img src="https://s6.uupload.ir/files/1761565929838_lcd7.png" alt="Instagram" onclick="completeMission('instagram',0.5)">
+    <img src="https://s6.uupload.ir/files/1761565975760_37uu.png" alt="TikTok" onclick="completeMission('tiktok',0.5)">
+    <img src="https://s6.uupload.ir/files/1761566122776_0xlc.png" alt="Telegram" onclick="completeMission('telegram',0.5)">
+    <img src="https://s6.uupload.ir/files/1761566178319_vj8h.png" alt="X" onclick="completeMission('x',0.5)">
+</div>
+
+<div class="referral hidden" id="referralDiv">
+    <p>Your referral link: <span id="refLink"></span></p>
+</div>
 
 <script>
-let userTALA = 0;
+let currentUser = localStorage.getItem('currentUser') || null;
+let users = JSON.parse(localStorage.getItem('users') || '{}');
+let userTALA = JSON.parse(localStorage.getItem('userTALA') || '{}');
+let refLinks = JSON.parse(localStorage.getItem('refLinks') || {});
+let missionsDone = JSON.parse(localStorage.getItem('missionsDone') || {});
 
-function loginUser() {
-  const email = document.getElementById('email').value.trim();
-  const pwd = document.getElementById('password').value.trim();
-  const msg = document.getElementById('loginMsg');
-  if(email && pwd) {
-    document.getElementById('loginSection').style.display = 'none';
-    document.getElementById('appSection').style.display = 'block';
-    msg.textContent = '';
-  } else {
-    msg.textContent = 'Please enter valid email and password.';
-  }
+function saveData(){
+    localStorage.setItem('users', JSON.stringify(users));
+    localStorage.setItem('userTALA', JSON.stringify(userTALA));
+    localStorage.setItem('refLinks', JSON.stringify(refLinks));
+    localStorage.setItem('missionsDone', JSON.stringify(missionsDone));
+    if(currentUser) localStorage.setItem('currentUser', currentUser);
 }
 
-function earnTALA(platform) {
-  let reward = 0;
-  switch(platform) {
-    case 'YouTube': reward = 1; break;
-    case 'Instagram': 
-    case 'TikTok': 
-    case 'Telegram': 
-    case 'X': reward = 0.5; break;
-  }
-  userTALA += reward;
-  document.getElementById('totalTALA').textContent = `Total TALA: ${userTALA}`;
-  alert(`You earned ${reward} TALA for ${platform} mission!`);
+function registerUser() {
+    const email = document.getElementById('regEmail').value.trim();
+    const pass = document.getElementById('regPass').value.trim();
+    if(email && pass && !users[email]){
+        users[email] = pass;
+        userTALA[email] = 0;
+        missionsDone[email] = {};
+        refLinks[email] = 'https://yourapp.com/?ref='+btoa(email);
+        saveData();
+        alert('Registration successful! Your referral link: '+refLinks[email]);
+        document.getElementById('registerDiv').classList.add('hidden');
+        document.getElementById('loginDiv').classList.remove('hidden');
+    } else {
+        alert('Email already registered or invalid input.');
+    }
+}
+
+function loginUser() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass = document.getElementById('loginPass').value.trim();
+    if(users[email] && users[email] === pass){
+        currentUser = email;
+        document.getElementById('loginDiv').classList.add('hidden');
+        document.getElementById('socialButtons').classList.remove('hidden');
+        document.getElementById('userStats').classList.remove('hidden');
+        document.getElementById('referralDiv').classList.remove('hidden');
+        document.getElementById('totalTALA').textContent = userTALA[currentUser];
+        document.getElementById('refLink').textContent = refLinks[currentUser];
+        saveData();
+    } else {
+        alert('Invalid login.');
+    }
+}
+
+function completeMission(platform, amount){
+    if(!currentUser){
+        alert('Please register or login first.');
+        return;
+    }
+    if(!missionsDone[currentUser][platform]){
+        userTALA[currentUser] += amount;
+        missionsDone[currentUser][platform] = true;
+        document.getElementById('totalTALA').textContent = userTALA[currentUser];
+        alert('You earned '+amount+' TALA for completing '+platform+' mission!');
+        saveData();
+    } else {
+        alert('Mission already completed!');
+    }
+}
+
+// auto-login if already registered
+if(currentUser){
+    document.getElementById('registerDiv').classList.add('hidden');
+    document.getElementById('loginDiv').classList.add('hidden');
+    document.getElementById('socialButtons').classList.remove('hidden');
+    document.getElementById('userStats').classList.remove('hidden');
+    document.getElementById('referralDiv').classList.remove('hidden');
+    document.getElementById('totalTALA').textContent = userTALA[currentUser];
+    document.getElementById('refLink').textContent = refLinks[currentUser];
 }
 </script>
 
