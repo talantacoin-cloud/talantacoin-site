@@ -14,11 +14,11 @@ body {
     text-align: center;
 }
 header { margin-top: 20px; }
-header img { width: 5%; }
-header h1 { margin: 10px 0 5px 0; font-size: 24px; color: #ff0000; }
+header img { width: 10%; } /* لوگو بزرگتر */
+header h1 { margin: 10px 0 5px 0; font-size: 28px; color: #ff0000; }
 header p { font-size: 16px; }
 
-.auth-buttons, .social-buttons, .stats, .referral { margin: 20px 0; }
+.auth-section, .social-buttons, .stats, .referral { margin: 20px 0; }
 
 button {
     padding: 10px 20px;
@@ -53,21 +53,25 @@ input {
 <header>
     <img src="https://s6.uupload.ir/files/1761571561974_mpn7.png" alt="TalantaCoin Logo">
     <h1>TalantaCoin</h1>
-    <p>Complete missions to earn 1 TALA.<br>Earn 0.5 TALA per referral and per social media video view.</p>
+    <p>Complete missions to earn TALA.<br>Earn 0.5 TALA per referral and per social media video view.</p>
 </header>
 
-<div class="auth-buttons">
+<div class="auth-section">
     <div id="registerDiv">
         <h3>Register</h3>
         <input type="email" id="regEmail" placeholder="Gmail"><br>
         <input type="password" id="regPass" placeholder="Password"><br>
+        <input type="password" id="regPassConfirm" placeholder="Confirm Password"><br>
         <button onclick="registerUser()">Register</button>
     </div>
-    <div id="loginDiv" class="hidden">
+    <div id="loginDiv">
         <h3>Login</h3>
         <input type="email" id="loginEmail" placeholder="Gmail"><br>
         <input type="password" id="loginPass" placeholder="Password"><br>
         <button onclick="loginUser()">Login</button>
+        <p>or login with Gmail only:</p>
+        <input type="email" id="quickLoginEmail" placeholder="Gmail">
+        <button onclick="quickLogin()">Login</button>
     </div>
 </div>
 
@@ -105,18 +109,27 @@ function saveData(){
 function registerUser() {
     const email = document.getElementById('regEmail').value.trim();
     const pass = document.getElementById('regPass').value.trim();
-    if(email && pass && !users[email]){
-        users[email] = pass;
-        userTALA[email] = 0;
-        missionsDone[email] = {};
-        refLinks[email] = 'https://yourapp.com/?ref='+btoa(email);
-        saveData();
-        alert('Registration successful! Your referral link: '+refLinks[email]);
-        document.getElementById('registerDiv').classList.add('hidden');
-        document.getElementById('loginDiv').classList.remove('hidden');
-    } else {
-        alert('Email already registered or invalid input.');
+    const passConfirm = document.getElementById('regPassConfirm').value.trim();
+    if(!email || !pass || !passConfirm){
+        alert('Please fill all fields.');
+        return;
     }
+    if(pass !== passConfirm){
+        alert('Passwords do not match.');
+        return;
+    }
+    if(users[email]){
+        alert('Email already registered.');
+        return;
+    }
+    users[email] = pass;
+    userTALA[email] = 1; // TALA reward for new user
+    missionsDone[email] = {};
+    refLinks[email] = 'https://yourapp.com/?ref='+btoa(email);
+    saveData();
+    alert('Registration successful! Your referral link: '+refLinks[email]);
+    currentUser = email;
+    showUserUI();
 }
 
 function loginUser() {
@@ -124,16 +137,31 @@ function loginUser() {
     const pass = document.getElementById('loginPass').value.trim();
     if(users[email] && users[email] === pass){
         currentUser = email;
-        document.getElementById('loginDiv').classList.add('hidden');
-        document.getElementById('socialButtons').classList.remove('hidden');
-        document.getElementById('userStats').classList.remove('hidden');
-        document.getElementById('referralDiv').classList.remove('hidden');
-        document.getElementById('totalTALA').textContent = userTALA[currentUser];
-        document.getElementById('refLink').textContent = refLinks[currentUser];
-        saveData();
+        showUserUI();
     } else {
         alert('Invalid login.');
     }
+}
+
+function quickLogin(){
+    const email = document.getElementById('quickLoginEmail').value.trim();
+    if(users[email]){
+        currentUser = email;
+        showUserUI();
+    } else {
+        alert('Email not registered.');
+    }
+}
+
+function showUserUI(){
+    document.getElementById('registerDiv').classList.add('hidden');
+    document.getElementById('loginDiv').classList.add('hidden');
+    document.getElementById('socialButtons').classList.remove('hidden');
+    document.getElementById('userStats').classList.remove('hidden');
+    document.getElementById('referralDiv').classList.remove('hidden');
+    document.getElementById('totalTALA').textContent = userTALA[currentUser];
+    document.getElementById('refLink').textContent = refLinks[currentUser];
+    saveData();
 }
 
 function completeMission(platform, amount){
@@ -154,13 +182,7 @@ function completeMission(platform, amount){
 
 // auto-login if already registered
 if(currentUser){
-    document.getElementById('registerDiv').classList.add('hidden');
-    document.getElementById('loginDiv').classList.add('hidden');
-    document.getElementById('socialButtons').classList.remove('hidden');
-    document.getElementById('userStats').classList.remove('hidden');
-    document.getElementById('referralDiv').classList.remove('hidden');
-    document.getElementById('totalTALA').textContent = userTALA[currentUser];
-    document.getElementById('refLink').textContent = refLinks[currentUser];
+    showUserUI();
 }
 </script>
 
