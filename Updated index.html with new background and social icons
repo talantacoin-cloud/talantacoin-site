@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TalantaCoin - A Portal in Time</title>
+  <style>
+    /* تنظیمات کلی */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      background: url('https://s6.uupload.ir/files/1000056913_t4k.png') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      text-align: center;
+    }
+
+    /* لوگو و عنوان */
+    header img {
+      max-width: 200px;
+      margin-bottom: 10px;
+    }
+
+    header h1 {
+      color: #ff0000;
+      margin: 0;
+      font-size: 2.2rem;
+      text-shadow: 0 0 10px #ff0000;
+    }
+
+    header p {
+      color: #ffcc00;
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+    }
+
+    /* توضیح حرفه‌ای انگلیسی */
+    .tagline {
+      font-size: 1rem;
+      color: #ffffff;
+      max-width: 400px;
+      margin: 0 auto 40px;
+      line-height: 1.5;
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+    }
+
+    /* دکمه‌های شبکه اجتماعی */
+    .social-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .social-buttons a {
+      display: inline-block;
+      transition: all 0.3s ease;
+    }
+
+    .social-buttons img {
+      width: 90px;
+      height: auto;
+      border-radius: 15px;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+    }
+
+    .social-buttons a:hover img {
+      transform: scale(1.15);
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.8);
+      filter: brightness(1.2);
+    }
+
+    footer {
+      position: absolute;
+      bottom: 10px;
+      color: #bbb;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 600px) {
+      .social-buttons img {
+        width: 70px;
+      }
+      .tagline {
+        font-size: 0.9rem;
+        max-width: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="https://s6.uupload.ir/files/inshot_20251027_085901059_aeni.jpg" alt="TalantaCoin Logo" />
+    <h1>TalantaCoin</h1>
+    <p>A Portal in Time</p>
+    <div class="tagline">
+      TalantaCoin connects innovation and time — a bridge between technology, value, and vision.  
+      Join the evolution of digital freedom.
+    </div>
+  </header>
+
+  <div class="social-buttons">
+    <a href="https://www.youtube.com/@talantacoin" target="_blank">
+      <img src="https://s6.uupload.ir/files/1761565805692_xev1.png" alt="YouTube" />
+    </a>
+    <a href="https://www.instagram.com/talantacoin" target="_blank">
+      <img src="https://s6.uupload.ir/files/1761565929838_lcd7.png" alt="Instagram" />
+    </a>
+    <a href="https://www.tiktok.com/@talantacoin" target="_blank">
+      <img src="https://s6.uupload.ir/files/1761565975760_37uu.png" alt="TikTok" />
+    </a>
+    <a href="https://t.me/talantacoin" target="_blank">
+      <img src="https://s6.uupload.ir/files/1761566122776_0xlc.png" alt="Telegram" />
+    </a>
+    <a href="https://twitter.com/talantacoin" target="_blank">
+      <img src="https://s6.uupload.ir/files/1761566178319_vj8h.png" alt="X" />
+    </a>
+  </div>
+
+  <footer>
+    &copy; 2025 TalantaCoin. All rights reserved.
+  </footer>
+</body>
+</html>
