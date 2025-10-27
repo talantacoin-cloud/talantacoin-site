@@ -1,211 +1,214 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TalantaCoin Mini App</title>
-<style>
-body {
-    margin:0;
-    font-family: Arial,sans-serif;
-    background: url('https://s6.uupload.ir/files/1000056953_myyj.png') no-repeat center center fixed;
-    background-size: cover;
-    color: #fff;
-    text-align: center;
-}
-header { margin-top: 20px; }
-header img { width: 15%; }
-header h1 { margin: 10px 0 5px 0; font-size: 24px; color: #ff0000; }
-header p { font-size: 16px; }
-
-.auth-section, .social-buttons, .stats, .referral { margin: 20px 0; }
-
-button {
-    padding: 10px 20px;
-    margin: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    border: none;
-    border-radius: 5px;
-    transition: all 0.3s ease;
-}
-button:hover { transform: scale(1.1); box-shadow: 0 0 10px #ff0; }
-
-.social-buttons img {
-    width: 50px;
-    margin: 10px;
-    cursor: pointer;
-    vertical-align: middle;
-    transition: all 0.3s ease;
-}
-.social-buttons img:hover { transform: scale(1.2); filter: brightness(1.5); }
-
-.stats span { font-weight: bold; color: #ff0; }
-input {
-    padding: 8px;
-    margin: 5px;
-    border-radius: 5px;
-    border: none;
-    width: 200px;
-}
-.hidden { display:none; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TalantaCoin</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Tahoma', sans-serif;
+      background: linear-gradient(to bottom right, #222, #444);
+      color: #fff;
+      text-align: center;
+    }
+    header img {
+      width: 120px;
+      margin-top: 20px;
+    }
+    header h1 {
+      font-size: 28px;
+      color: #ffcc00;
+    }
+    .auth-section, .dashboard {
+      margin: 30px auto;
+      max-width: 340px;
+      background: #333;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    input, button {
+      width: 90%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 5px;
+      border: none;
+    }
+    button {
+      background: #ffcc00;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #ffd633;
+    }
+    .hidden {
+      display: none;
+    }
+    .mission {
+      margin: 15px;
+      background: #222;
+      padding: 10px;
+      border-radius: 10px;
+    }
+    .mission img {
+      width: 50px;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .mission img:hover {
+      transform: scale(1.2);
+    }
+    .mission span {
+      font-weight: bold;
+      color: #ffcc00;
+      margin-left: 10px;
+    }
+  </style>
 </head>
 <body>
 
 <header>
-    <img src="https://s6.uupload.ir/files/1761571561974_mpn7.png" alt="TalantaCoin Logo">
-    <h1>TalantaCoin</h1>
-    <p>Complete missions to earn 1 TALA.<br>Earn 0.5 TALA per referral and per social media video view.</p>
+  <img src="https://s6.uupload.ir/files/1761571561974_mpn7.png" alt="Logo">
+  <h1>TalantaCoin</h1>
 </header>
 
-<div class="auth-section">
-    <div id="registerDiv">
-        <h3>Register</h3>
-        <input type="email" id="regEmail" placeholder="Gmail"><br>
-        <input type="password" id="regPass" placeholder="Password"><br>
-        <input type="password" id="regPassConfirm" placeholder="Confirm Password"><br>
-        <button onclick="registerUser()">Register</button><br>
-        <button onclick="showLogin()">Already registered? Login</button>
-        <button onclick="showGmailLogin()">Login with Gmail</button>
-    </div>
-
-    <div id="loginDiv" class="hidden">
-        <h3>Login</h3>
-        <input type="email" id="loginEmail" placeholder="Gmail"><br>
-        <input type="password" id="loginPass" placeholder="Password"><br>
-        <button onclick="loginUser()">Login</button><br>
-        <button onclick="showRegister()">New user? Register</button>
-        <button onclick="showGmailLogin()">Login with Gmail</button>
-    </div>
-
-    <div id="gmailLoginDiv" class="hidden">
-        <h3>Login with Gmail</h3>
-        <input type="email" id="gmailOnlyEmail" placeholder="Gmail"><br>
-        <button onclick="gmailLogin()">Login</button><br>
-        <button onclick="showLogin()">Back to Login</button>
-    </div>
+<div class="auth-section" id="registerForm">
+  <h3>ثبت‌نام</h3>
+  <input type="email" id="regEmail" placeholder="ایمیل"><br>
+  <input type="password" id="regPass" placeholder="رمز عبور"><br>
+  <input type="password" id="regConfirm" placeholder="تأیید رمز"><br>
+  <button onclick="registerUser()">ثبت‌نام</button>
+  <button onclick="showLogin()">ورود</button>
 </div>
 
-<div class="stats hidden" id="userStats">
-    <p>Total TALA: <span id="totalTALA">0</span></p>
+<div class="auth-section hidden" id="loginForm">
+  <h3>ورود</h3>
+  <input type="email" id="loginEmail" placeholder="ایمیل"><br>
+  <input type="password" id="loginPass" placeholder="رمز عبور"><br>
+  <button onclick="loginUser()">ورود</button>
+  <button onclick="showRegister()">ثبت‌نام</button>
+  <button onclick="gmailLogin()">ورود با جیمیل</button>
 </div>
 
-<div class="social-buttons hidden" id="socialButtons">
-    <div>
-        <img src="https://s6.uupload.ir/files/1761565805692_xev1.png" alt="YouTube" onclick="completeMission('youtube',1)">
-        <span id="youtubeReward">1 TALA</span>
-    </div>
-    <div>
-        <img src="https://s6.uupload.ir/files/1761565929838_lcd7.png" alt="Instagram" onclick="completeMission('instagram',0.5)">
-        <span id="instagramReward">0.5 TALA</span>
-    </div>
-    <div>
-        <img src="https://s6.uupload.ir/files/1761565975760_37uu.png" alt="TikTok" onclick="completeMission('tiktok',0.5)">
-        <span id="tiktokReward">0.5 TALA</span>
-    </div>
-    <div>
-        <img src="https://s6.uupload.ir/files/1761566122776_0xlc.png" alt="Telegram" onclick="completeMission('telegram',0.5)">
-        <span id="telegramReward">0.5 TALA</span>
-    </div>
-    <div>
-        <img src="https://s6.uupload.ir/files/1761566178319_vj8h.png" alt="X" onclick="completeMission('x',0.5)">
-        <span id="xReward">0.5 TALA</span>
-    </div>
+<div class="dashboard hidden" id="dashboard">
+  <h3>خوش آمدید!</h3>
+  <p id="welcomeText"></p>
+  <div id="missionsContainer"></div>
+  <button onclick="logout()">خروج</button>
 </div>
 
-<div class="referral hidden" id="referralDiv">
-    <p>Your referral link: <span id="refLink"></span></p>
-</div>
-
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js"></script>
 <script>
-let currentUser = localStorage.getItem('currentUser') || null;
-let users = JSON.parse(localStorage.getItem('users') || '{}');
-let userTALA = JSON.parse(localStorage.getItem('userTALA') || '{}');
-let refLinks = JSON.parse(localStorage.getItem('refLinks') || {});
-let missionsDone = JSON.parse(localStorage.getItem('missionsDone') || {});
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
 
-function saveData(){
-    localStorage.setItem('users', JSON.stringify(users));
-    localStorage.setItem('userTALA', JSON.stringify(userTALA));
-    localStorage.setItem('refLinks', JSON.stringify(refLinks));
-    localStorage.setItem('missionsDone', JSON.stringify(missionsDone));
-    if(currentUser) localStorage.setItem('currentUser', currentUser);
-}
+  const socialLinks = {
+    youtube: "https://youtube.com/yourchannel",
+    instagram: "https://instagram.com/yourpage",
+    tiktok: "https://tiktok.com/@yourprofile",
+    telegram: "https://t.me/yourchannel",
+    x: "https://x.com/yourprofile"
+  };
 
-function showRegister() {
-    document.getElementById('registerDiv').classList.remove('hidden');
-    document.getElementById('loginDiv').classList.add('hidden');
-    document.getElementById('gmailLoginDiv').classList.add('hidden');
-}
+  function showRegister() {
+    document.getElementById('registerForm').classList.remove('hidden');
+    document.getElementById('loginForm').classList.add('hidden');
+    document.getElementById('dashboard').classList.add('hidden');
+  }
 
-function showLogin() {
-    document.getElementById('registerDiv').classList.add('hidden');
-    document.getElementById('loginDiv').classList.remove('hidden');
-    document.getElementById('gmailLoginDiv').classList.add('hidden');
-}
+  function showLogin() {
+    document.getElementById('registerForm').classList.add('hidden');
+    document.getElementById('loginForm').classList.remove('hidden');
+    document.getElementById('dashboard').classList.add('hidden');
+  }
 
-function showGmailLogin() {
-    document.getElementById('registerDiv').classList.add('hidden');
-    document.getElementById('loginDiv').classList.add('hidden');
-    document.getElementById('gmailLoginDiv').classList.remove('hidden');
-}
-
-function registerUser() {
+  function registerUser() {
     const email = document.getElementById('regEmail').value.trim();
     const pass = document.getElementById('regPass').value.trim();
-    const confirm = document.getElementById('regPassConfirm').value.trim();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const confirm = document.getElementById('regConfirm').value.trim();
+    if (!email || !pass || !confirm) return alert('لطفاً همه فیلدها را پر کنید.');
+    if (pass !== confirm) return alert('رمزها یکسان نیستند.');
 
-    if(!email || !pass || !confirm){
-        alert('Please fill all fields.');
-        return;
-    }
-    if(!emailRegex.test(email)){
-        alert('Invalid email format.');
-        return;
-    }
-    if(pass !== confirm){
-        alert('Passwords do not match.');
-        return;
-    }
-    if(users[email]){
-        alert('Email already registered.');
-        return;
-    }
+    auth.createUserWithEmailAndPassword(email, pass)
+      .then(userCredential => {
+        const user = userCredential.user;
+        const missions = {};
+        Object.keys(socialLinks).forEach(p => missions[p] = { done: false, reward: 1 });
+        db.collection('users').doc(user.uid).set({
+          email: user.email,
+          tala: 0,
+          refLink: `https://yourapp.com/?ref=${btoa(user.email)}`,
+          missions: missions
+        });
+        alert('ثبت‌نام موفق بود!');
+        showDashboard(user);
+      })
+      .catch(error => alert(error.message));
+  }
 
-    users[email] = pass;
-    userTALA[email] = 0;
-    missionsDone[email] = {};
-    refLinks[email] = 'https://yourapp.com/?ref='+btoa(email);
-    currentUser = email;
-    saveData();
-    alert('Registration successful! Your referral link: '+refLinks[email]);
-    showApp();
-}
-
-function loginUser() {
+  function loginUser() {
     const email = document.getElementById('loginEmail').value.trim();
     const pass = document.getElementById('loginPass').value.trim();
-    if(users[email] && users[email] === pass){
-        currentUser = email;
-        showApp();
-    } else {
-        alert('Invalid login.');
-    }
-}
+    auth.signInWithEmailAndPassword(email, pass)
+      .then(userCredential => showDashboard(userCredential.user))
+      .catch(error => alert('اطلاعات ورود اشتباه است.'));
+  }
 
-function gmailLogin() {
-    const email = document.getElementById('gmailOnlyEmail').value.trim();
-    if(!email || !users[email]){
-        alert('Email not registered.');
-        return;
-    }
-    currentUser = email;
-    showApp();
-}
+  function gmailLogin() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider)
+      .then(result => {
+        const user = result.user;
+        const userRef = db.collection('users').doc(user.uid);
+        userRef.get().then(doc => {
+          if (!doc.exists) {
+            const missions = {};
+            Object.keys(socialLinks).forEach(p => missions[p] = { done: false, reward: 1 });
+            userRef.set({
+              email: user.email,
+              tala: 0,
+              refLink: `https://yourapp.com/?ref=${btoa(user.email)}`,
+              missions: missions
+            });
+          }
+          showDashboard(user);
+        });
+      })
+      .catch(error => alert('ورود با جیمیل ناموفق بود.'));
+  }
 
-function showApp(){
-    document.getElementById('registerDiv').classList.add('hidden');
-    document.getElementById('loginDiv').classList.add('hidden');
-    document.getElement[43dcd9a7-70db-4a1f-b0ae-981daa162054](https://github.com/bgoonz/web-dev-utils-package/tree/65a7b21c0444f4cbeb3c313a750fb43560047e77/personal-utilities%2Fcopy-2-clip%2FREADME.md?citationMarker=43dcd9a7-70db-4a1f-b0ae-981daa162054 "1")
+  function showDashboard(user) {
+    document.getElementById('registerForm').classList.add('hidden');
+    document.getElementById('loginForm').classList.add('hidden');
+    document.getElementById('dashboard').classList.remove('hidden');
+    db.collection('users').doc(user.uid).get().then(doc => {
+      const data = doc.data();
+      document.getElementById('welcomeText').textContent = `کاربر: ${data.email} | TALA: ${data.tala}`;
+      const container = document.getElementById('missionsContainer');
+      container.innerHTML = '';
+      Object.entries(socialLinks).forEach(([platform, link]) => {
+        const reward = data.missions?.[platform]?.reward || 0;
+        const done = data.missions?.[platform]?.done;
+        const div = document.createElement('div');
+        div.className = 'mission';
+        div.innerHTML = `
+          <a href="${link}" target="_blank">
+            <img src="https://s6.uupload.ir/files/${platform}.png" alt="${platform}">
+          </a>
+          <span id="${platform}Reward">${reward} TALA</span>
+          ${!done ? `<button onclick="completeMission('${platform}')">انجام شد</button>` : ''}
+        `;
+        container.appendChild(div);
