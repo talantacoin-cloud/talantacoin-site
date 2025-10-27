@@ -14,7 +14,7 @@ body {
     text-align: center;
 }
 header { margin-top: 20px; }
-header img { width: 15%; } /* لوگو سه برابر شد */
+header img { width: 15%; }
 header h1 { margin: 10px 0 5px 0; font-size: 24px; color: #ff0000; }
 header p { font-size: 16px; }
 
@@ -65,20 +65,25 @@ input {
         <input type="email" id="regEmail" placeholder="Gmail"><br>
         <input type="password" id="regPass" placeholder="Password"><br>
         <input type="password" id="regPassConfirm" placeholder="Confirm Password"><br>
-        <button onclick="registerUser()">Register</button>
+        <button onclick="registerUser()">Register</button><br>
+        <button onclick="showLogin()">Already registered? Login</button>
+        <button onclick="showGmailLogin()">Login with Gmail</button>
     </div>
 
     <div id="loginDiv" class="hidden">
         <h3>Login</h3>
         <input type="email" id="loginEmail" placeholder="Gmail"><br>
         <input type="password" id="loginPass" placeholder="Password"><br>
-        <button onclick="loginUser()">Login</button>
+        <button onclick="loginUser()">Login</button><br>
+        <button onclick="showRegister()">New user? Register</button>
+        <button onclick="showGmailLogin()">Login with Gmail</button>
     </div>
 
     <div id="gmailLoginDiv" class="hidden">
         <h3>Login with Gmail</h3>
         <input type="email" id="gmailOnlyEmail" placeholder="Gmail"><br>
-        <button onclick="gmailLogin()">Login</button>
+        <button onclick="gmailLogin()">Login</button><br>
+        <button onclick="showLogin()">Back to Login</button>
     </div>
 </div>
 
@@ -89,19 +94,19 @@ input {
 <div class="social-buttons hidden" id="socialButtons">
     <div>
         <img src="https://s6.uupload.ir/files/1761565805692_xev1.png" alt="YouTube" onclick="completeMission('youtube',1)">
-        <span id="ytReward">1 TALA</span>
+        <span id="youtubeReward">1 TALA</span>
     </div>
     <div>
         <img src="https://s6.uupload.ir/files/1761565929838_lcd7.png" alt="Instagram" onclick="completeMission('instagram',0.5)">
-        <span id="instaReward">0.5 TALA</span>
+        <span id="instagramReward">0.5 TALA</span>
     </div>
     <div>
         <img src="https://s6.uupload.ir/files/1761565975760_37uu.png" alt="TikTok" onclick="completeMission('tiktok',0.5)">
-        <span id="ttReward">0.5 TALA</span>
+        <span id="tiktokReward">0.5 TALA</span>
     </div>
     <div>
         <img src="https://s6.uupload.ir/files/1761566122776_0xlc.png" alt="Telegram" onclick="completeMission('telegram',0.5)">
-        <span id="tgReward">0.5 TALA</span>
+        <span id="telegramReward">0.5 TALA</span>
     </div>
     <div>
         <img src="https://s6.uupload.ir/files/1761566178319_vj8h.png" alt="X" onclick="completeMission('x',0.5)">
@@ -128,12 +133,36 @@ function saveData(){
     if(currentUser) localStorage.setItem('currentUser', currentUser);
 }
 
+function showRegister() {
+    document.getElementById('registerDiv').classList.remove('hidden');
+    document.getElementById('loginDiv').classList.add('hidden');
+    document.getElementById('gmailLoginDiv').classList.add('hidden');
+}
+
+function showLogin() {
+    document.getElementById('registerDiv').classList.add('hidden');
+    document.getElementById('loginDiv').classList.remove('hidden');
+    document.getElementById('gmailLoginDiv').classList.add('hidden');
+}
+
+function showGmailLogin() {
+    document.getElementById('registerDiv').classList.add('hidden');
+    document.getElementById('loginDiv').classList.add('hidden');
+    document.getElementById('gmailLoginDiv').classList.remove('hidden');
+}
+
 function registerUser() {
     const email = document.getElementById('regEmail').value.trim();
     const pass = document.getElementById('regPass').value.trim();
     const confirm = document.getElementById('regPassConfirm').value.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     if(!email || !pass || !confirm){
         alert('Please fill all fields.');
+        return;
+    }
+    if(!emailRegex.test(email)){
+        alert('Invalid email format.');
         return;
     }
     if(pass !== confirm){
@@ -144,14 +173,15 @@ function registerUser() {
         alert('Email already registered.');
         return;
     }
+
     users[email] = pass;
     userTALA[email] = 0;
     missionsDone[email] = {};
     refLinks[email] = 'https://yourapp.com/?ref='+btoa(email);
+    currentUser = email;
     saveData();
     alert('Registration successful! Your referral link: '+refLinks[email]);
-    document.getElementById('registerDiv').classList.add('hidden');
-    document.getElementById('loginDiv').classList.remove('hidden');
+    showApp();
 }
 
 function loginUser() {
@@ -178,41 +208,4 @@ function gmailLogin() {
 function showApp(){
     document.getElementById('registerDiv').classList.add('hidden');
     document.getElementById('loginDiv').classList.add('hidden');
-    document.getElementById('gmailLoginDiv').classList.add('hidden');
-    document.getElementById('socialButtons').classList.remove('hidden');
-    document.getElementById('userStats').classList.remove('hidden');
-    document.getElementById('referralDiv').classList.remove('hidden');
-    document.getElementById('totalTALA').textContent = userTALA[currentUser];
-    document.getElementById('refLink').textContent = refLinks[currentUser];
-    saveData();
-}
-
-function completeMission(platform, amount){
-    if(!currentUser){
-        alert('Please login first.');
-        return;
-    }
-    if(!missionsDone[currentUser][platform]){
-        userTALA[currentUser] += amount;
-        missionsDone[currentUser][platform] = true;
-        document.getElementById('totalTALA').textContent = userTALA[currentUser];
-        document.getElementById(platform+'Reward').textContent = '0 TALA';
-        alert('You earned '+amount+' TALA for completing '+platform+' mission!');
-        saveData();
-    } else {
-        alert('Mission already completed!');
-    }
-}
-
-// auto-login if already registered
-if(currentUser){
-    showApp();
-} else {
-    document.getElementById('registerDiv').classList.remove('hidden');
-    document.getElementById('loginDiv').classList.remove('hidden');
-    document.getElementById('gmailLoginDiv').classList.remove('hidden');
-}
-</script>
-
-</body>
-</html>
+    document.getElement[43dcd9a7-70db-4a1f-b0ae-981daa162054](https://github.com/bgoonz/web-dev-utils-package/tree/65a7b21c0444f4cbeb3c313a750fb43560047e77/personal-utilities%2Fcopy-2-clip%2FREADME.md?citationMarker=43dcd9a7-70db-4a1f-b0ae-981daa162054 "1")
