@@ -14,8 +14,8 @@ body {
     text-align: center;
 }
 header { margin-top: 20px; }
-header img { width: 10%; } /* لوگو بزرگتر */
-header h1 { margin: 10px 0 5px 0; font-size: 28px; color: #ff0000; }
+header img { width: 15%; } /* لوگو سه برابر شد */
+header h1 { margin: 10px 0 5px 0; font-size: 24px; color: #ff0000; }
 header p { font-size: 16px; }
 
 .auth-section, .social-buttons, .stats, .referral { margin: 20px 0; }
@@ -36,7 +36,10 @@ button:hover { transform: scale(1.1); box-shadow: 0 0 10px #ff0; }
     margin: 10px;
     cursor: pointer;
     vertical-align: middle;
+    transition: all 0.3s ease;
 }
+.social-buttons img:hover { transform: scale(1.2); filter: brightness(1.5); }
+
 .stats span { font-weight: bold; color: #ff0; }
 input {
     padding: 8px;
@@ -53,7 +56,7 @@ input {
 <header>
     <img src="https://s6.uupload.ir/files/1761571561974_mpn7.png" alt="TalantaCoin Logo">
     <h1>TalantaCoin</h1>
-    <p>Complete missions to earn TALA.<br>Earn 0.5 TALA per referral and per social media video view.</p>
+    <p>Complete missions to earn 1 TALA.<br>Earn 0.5 TALA per referral and per social media video view.</p>
 </header>
 
 <div class="auth-section">
@@ -64,14 +67,18 @@ input {
         <input type="password" id="regPassConfirm" placeholder="Confirm Password"><br>
         <button onclick="registerUser()">Register</button>
     </div>
-    <div id="loginDiv">
+
+    <div id="loginDiv" class="hidden">
         <h3>Login</h3>
         <input type="email" id="loginEmail" placeholder="Gmail"><br>
         <input type="password" id="loginPass" placeholder="Password"><br>
         <button onclick="loginUser()">Login</button>
-        <p>or login with Gmail only:</p>
-        <input type="email" id="quickLoginEmail" placeholder="Gmail">
-        <button onclick="quickLogin()">Login</button>
+    </div>
+
+    <div id="gmailLoginDiv" class="hidden">
+        <h3>Login with Gmail</h3>
+        <input type="email" id="gmailOnlyEmail" placeholder="Gmail"><br>
+        <button onclick="gmailLogin()">Login</button>
     </div>
 </div>
 
@@ -80,11 +87,26 @@ input {
 </div>
 
 <div class="social-buttons hidden" id="socialButtons">
-    <img src="https://s6.uupload.ir/files/1761565805692_xev1.png" alt="YouTube" onclick="completeMission('youtube',1)">
-    <img src="https://s6.uupload.ir/files/1761565929838_lcd7.png" alt="Instagram" onclick="completeMission('instagram',0.5)">
-    <img src="https://s6.uupload.ir/files/1761565975760_37uu.png" alt="TikTok" onclick="completeMission('tiktok',0.5)">
-    <img src="https://s6.uupload.ir/files/1761566122776_0xlc.png" alt="Telegram" onclick="completeMission('telegram',0.5)">
-    <img src="https://s6.uupload.ir/files/1761566178319_vj8h.png" alt="X" onclick="completeMission('x',0.5)">
+    <div>
+        <img src="https://s6.uupload.ir/files/1761565805692_xev1.png" alt="YouTube" onclick="completeMission('youtube',1)">
+        <span id="ytReward">1 TALA</span>
+    </div>
+    <div>
+        <img src="https://s6.uupload.ir/files/1761565929838_lcd7.png" alt="Instagram" onclick="completeMission('instagram',0.5)">
+        <span id="instaReward">0.5 TALA</span>
+    </div>
+    <div>
+        <img src="https://s6.uupload.ir/files/1761565975760_37uu.png" alt="TikTok" onclick="completeMission('tiktok',0.5)">
+        <span id="ttReward">0.5 TALA</span>
+    </div>
+    <div>
+        <img src="https://s6.uupload.ir/files/1761566122776_0xlc.png" alt="Telegram" onclick="completeMission('telegram',0.5)">
+        <span id="tgReward">0.5 TALA</span>
+    </div>
+    <div>
+        <img src="https://s6.uupload.ir/files/1761566178319_vj8h.png" alt="X" onclick="completeMission('x',0.5)">
+        <span id="xReward">0.5 TALA</span>
+    </div>
 </div>
 
 <div class="referral hidden" id="referralDiv">
@@ -109,12 +131,12 @@ function saveData(){
 function registerUser() {
     const email = document.getElementById('regEmail').value.trim();
     const pass = document.getElementById('regPass').value.trim();
-    const passConfirm = document.getElementById('regPassConfirm').value.trim();
-    if(!email || !pass || !passConfirm){
+    const confirm = document.getElementById('regPassConfirm').value.trim();
+    if(!email || !pass || !confirm){
         alert('Please fill all fields.');
         return;
     }
-    if(pass !== passConfirm){
+    if(pass !== confirm){
         alert('Passwords do not match.');
         return;
     }
@@ -123,13 +145,13 @@ function registerUser() {
         return;
     }
     users[email] = pass;
-    userTALA[email] = 1; // TALA reward for new user
+    userTALA[email] = 0;
     missionsDone[email] = {};
     refLinks[email] = 'https://yourapp.com/?ref='+btoa(email);
     saveData();
     alert('Registration successful! Your referral link: '+refLinks[email]);
-    currentUser = email;
-    showUserUI();
+    document.getElementById('registerDiv').classList.add('hidden');
+    document.getElementById('loginDiv').classList.remove('hidden');
 }
 
 function loginUser() {
@@ -137,25 +159,26 @@ function loginUser() {
     const pass = document.getElementById('loginPass').value.trim();
     if(users[email] && users[email] === pass){
         currentUser = email;
-        showUserUI();
+        showApp();
     } else {
         alert('Invalid login.');
     }
 }
 
-function quickLogin(){
-    const email = document.getElementById('quickLoginEmail').value.trim();
-    if(users[email]){
-        currentUser = email;
-        showUserUI();
-    } else {
+function gmailLogin() {
+    const email = document.getElementById('gmailOnlyEmail').value.trim();
+    if(!email || !users[email]){
         alert('Email not registered.');
+        return;
     }
+    currentUser = email;
+    showApp();
 }
 
-function showUserUI(){
+function showApp(){
     document.getElementById('registerDiv').classList.add('hidden');
     document.getElementById('loginDiv').classList.add('hidden');
+    document.getElementById('gmailLoginDiv').classList.add('hidden');
     document.getElementById('socialButtons').classList.remove('hidden');
     document.getElementById('userStats').classList.remove('hidden');
     document.getElementById('referralDiv').classList.remove('hidden');
@@ -166,13 +189,14 @@ function showUserUI(){
 
 function completeMission(platform, amount){
     if(!currentUser){
-        alert('Please register or login first.');
+        alert('Please login first.');
         return;
     }
     if(!missionsDone[currentUser][platform]){
         userTALA[currentUser] += amount;
         missionsDone[currentUser][platform] = true;
         document.getElementById('totalTALA').textContent = userTALA[currentUser];
+        document.getElementById(platform+'Reward').textContent = '0 TALA';
         alert('You earned '+amount+' TALA for completing '+platform+' mission!');
         saveData();
     } else {
@@ -182,7 +206,11 @@ function completeMission(platform, amount){
 
 // auto-login if already registered
 if(currentUser){
-    showUserUI();
+    showApp();
+} else {
+    document.getElementById('registerDiv').classList.remove('hidden');
+    document.getElementById('loginDiv').classList.remove('hidden');
+    document.getElementById('gmailLoginDiv').classList.remove('hidden');
 }
 </script>
 
