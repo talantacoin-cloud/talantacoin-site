@@ -28,19 +28,31 @@
   <h1>TalantaCoin Admin Dashboard</h1>
 </header>
 
+<!-- فرم ورود ادمین -->
+<section id="loginSection">
+  <h2>Admin Login</h2>
+  <input type="text" id="username" placeholder="Username"><br>
+  <input type="password" id="password" placeholder="Admin Key"><br>
+  <button onclick="login()">Login</button>
+  <p id="loginMsg"></p>
+</section>
+
+<main class="hidden">
+
 <nav>
   <button onclick="showSection('admins')">Manage Admins</button>
   <button onclick="showSection('logs')">Login Logs</button>
   <button onclick="showSection('content')">Manage Content</button>
   <button onclick="showSection('layout')">Layout & Theme</button>
+  <button onclick="showSection('stats')">Site Stats</button>
 </nav>
-
-<main>
 
 <!-- مدیریت ادمین ها -->
 <section id="admins" class="hidden">
   <h2>Admins</h2>
   <input type="text" id="newAdmin" placeholder="New Admin Username">
+  <button onclick="generateAdminCode()">Generate OTP</button>
+  <p id="otpDisplay"></p>
   <button onclick="addAdmin()">Add Admin</button>
   <table>
     <thead><tr><th>Username</th><th>Actions</th></tr></thead>
@@ -93,13 +105,62 @@
   <input type="color" id="textColor" value="#ffffff" onchange="updateTextColor()">
 </section>
 
+<!-- آمار سایت -->
+<section id="stats" class="hidden">
+  <h2>Site Statistics</h2>
+  <p>Total Visits: <span id="totalVisits">0</span></p>
+  <p>Average Visit Duration: <span id="avgDuration">0</span> sec</p>
+  <p>Button Clicks:</p>
+  <ul id="buttonStats"></ul>
+  <p>Total Registered Users: <span id="totalUsers">0</span></p>
+</section>
+
 </main>
 
 <script>
+/* ---------- Data ---------- */
+let mainAdminKey = 'Ali1360Ali1360';
 let admins = ['mainAdmin'];
+let pendingAdmins = [];
 let logs = [];
 let links = [];
+let otpCodes = {};
+let visits = 0;
+let visitDurations = [];
+let buttonClicks = {};
+let users = [];
 
+/* ---------- Login ---------- */
+function login(){
+  const user = document.getElementById('username').value.trim();
+  const pass = document.getElementById('password').value.trim();
+  const msg = document.getElementById('loginMsg');
+
+  if(user==='mainAdmin' && pass===mainAdminKey){
+    document.getElementById('loginSection').classList.add('hidden');
+    document.querySelector('main').classList.remove('hidden');
+    logs.push({time:new Date().toLocaleString(), user, status:'Success'});
+    msg.textContent='';
+    renderAdmins();
+    renderLogs();
+    renderLinks();
+  } else if(admins.includes(user)){
+    if(otpCodes[user] && pass===otpCodes[user]){
+      // Admin requires main admin approval
+      logs.push({time:new Date().toLocaleString(), user, status:'Pending Approval'});
+      alert('Waiting for main admin approval.');
+      return;
+    } else {
+      logs.push({time:new Date().toLocaleString(), user, status:'Failed'});
+      msg.textContent='Invalid OTP or credentials';
+    }
+  } else {
+    logs.push({time:new Date().toLocaleString(), user, status:'Failed'});
+    msg.textContent='Invalid credentials';
+  }
+}
+
+/* ---------- Sections ---------- */
 function showSection(sectionId){
   document.querySelectorAll('main section').forEach(sec => sec.classList.add('hidden'));
   document.getElementById(sectionId).classList.remove('hidden');
@@ -108,7 +169,7 @@ function showSection(sectionId){
   if(sectionId==='content') renderLinks();
 }
 
-// Admin functions
+/* ---------- Admin Management ---------- */
 function renderAdmins(){
   const tbody = document.getElementById('adminList');
   tbody.innerHTML='';
@@ -120,11 +181,25 @@ function renderAdmins(){
   });
 }
 
+function generateAdminCode(){
+  const newAdmin=document.getElementById('newAdmin').value.trim();
+  if(newAdmin && !admins.includes(newAdmin)){
+    const code=Math.floor(100000 + Math.random()*900000); // 6-digit OTP
+    otpCodes[newAdmin]=code.toString();
+    document.getElementById('otpDisplay').textContent='OTP for '+newAdmin+': '+code;
+    pendingAdmins.push(newAdmin);
+  }
+}
+
 function addAdmin(){
   const newAdmin=document.getElementById('newAdmin').value.trim();
-  if(newAdmin && !admins.includes(newAdmin)) admins.push(newAdmin);
-  document.getElementById('newAdmin').value='';
-  renderAdmins();
+  if(newAdmin && pendingAdmins.includes(newAdmin)){
+    admins.push(newAdmin);
+    pendingAdmins = pendingAdmins.filter(a=>a!==newAdmin);
+    renderAdmins();
+    document.getElementById('newAdmin').value='';
+    document.getElementById('otpDisplay').textContent='';
+  }
 }
 
 function removeAdmin(admin){
@@ -133,7 +208,7 @@ function removeAdmin(admin){
   renderAdmins();
 }
 
-// Logs
+/* ---------- Logs ---------- */
 function renderLogs(){
   const tbody=document.getElementById('logList');
   tbody.innerHTML='';
@@ -144,16 +219,16 @@ function renderLogs(){
   });
 }
 
-// Content
+/* ---------- Content ---------- */
 function updateContent(){ alert('Text updated: '+document.getElementById('siteText').value); }
 
-// Links
 function addLink(){
   const text=document.getElementById('newLinkText').value.trim();
   const url=document.getElementById('newLinkURL').value.trim();
   if(text && url){ links.push({text,url}); renderLinks(); }
   document.getElementById('newLinkText').value=''; document.getElementById('newLinkURL').value='';
 }
+
 function renderLinks(){
   const ul=document.getElementById('linkList');
   ul.innerHTML='';
@@ -164,23 +239,18 @@ function renderLinks(){
     ul.appendChild(li);
   });
 }
+
 function removeLink(index){ links.splice(index,1); renderLinks(); }
 
-// Images
 function updateLogo(){
   const url=document.getElementById('newImageURL').value.trim();
   if(url){ document.getElementById('previewLogo').src=url; alert('Logo updated'); }
 }
 
-// Theme
+/* ---------- Layout & Theme ---------- */
 function updateBackground(){ document.body.style.backgroundColor=document.getElementById('bgColor').value; }
 function updateTextColor(){ document.body.style.color=document.getElementById('textColor').value; }
 
-// Sample logs
-logs.push({time:'2025-10-27 10:00', user:'mainAdmin', status:'Success'});
-logs.push({time:'2025-10-27 10:05', user:'hacker01', status:'Failed'});
-
-// Drag & Drop
 const draggables = document.querySelectorAll('.draggable');
 const container = document.getElementById('layoutSections');
 let dragged=null;
@@ -189,7 +259,21 @@ draggables.forEach(d=>{
   d.addEventListener('dragover',e=>{e.preventDefault();});
   d.addEventListener('drop',()=>{container.insertBefore(dragged,d);});
 });
-</script>
 
-</body>
-</html>
+/* ---------- Site Stats ---------- */
+function updateStats(){
+  document.getElementById('totalVisits').textContent=visits;
+  const avg = visitDurations.length>0 ? (visitDurations.reduce((a,b)=>a+b,0)/visitDurations.length).toFixed(2) : 0;
+  document.getElementById('avgDuration').textContent=avg;
+  const ul = document.getElementById('buttonStats');
+  ul.innerHTML='';
+  for(let btn in buttonClicks){
+    const li=document.createElement('li');
+    li.textContent=btn+': '+buttonClicks[btn];
+    ul.appendChild(li);
+  }
+  document.getElementById('totalUsers').textContent=users.length;
+}
+
+/* ---------- Simulate User Actions ---------- */
+function simulateVisit(duration
