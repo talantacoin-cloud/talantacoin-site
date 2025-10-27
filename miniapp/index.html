@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TALA Mini App</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: url('https://s6.uupload.ir/files/1000056953_myyj.png') no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;
+    text-align: center;
+  }
+  header {
+    margin-top: 20px;
+  }
+  #logo {
+    width: 5%;
+    min-width: 50px;
+    max-width: 80px;
+  }
+  h1 {
+    margin: 5px 0;
+    font-size: 1.8em;
+  }
+  p.description {
+    font-size: 1em;
+    margin: 5px 20px 20px 20px;
+  }
+  .social-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+  }
+  .social-btn {
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .social-btn:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 15px #fff;
+  }
+  .reward {
+    font-size: 0.9em;
+    margin-top: 5px;
+  }
+  #totalTALA {
+    font-size: 1.5em;
+    margin: 15px 0;
+  }
+  button#walletBtn {
+    padding: 10px 20px;
+    font-size: 1em;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: #ffcc00;
+    color: #000;
+    margin-bottom: 20px;
+    opacity: 0.5;
+  }
+  button#walletBtn:disabled {
+    cursor: not-allowed;
+  }
+  input[type="email"], input[type="password"] {
+    padding: 10px;
+    margin: 5px;
+    width: 200px;
+    border-radius: 5px;
+    border: none;
+  }
+  button#loginBtn {
+    padding: 10px 20px;
+    margin: 10px;
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    background-color: #ffcc00;
+    color: #000;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img id="logo" src="https://s6.uupload.ir/files/1761571561974_mpn7.png" alt="TalantaCoin Logo">
+  <h1>TalantaCoin</h1>
+  <p class="description">
+    Complete missions to earn 1 TALA per first-time task.<br>
+    Earn 0.5 TALA for each referral and every subsequent video mission.
+  </p>
+</header>
+
+<section id="loginSection">
+  <input type="email" id="email" placeholder="Enter your Gmail"><br>
+  <input type="password" id="password" placeholder="Password"><br>
+  <button id="loginBtn" onclick="loginUser()">Login / Sign Up</button>
+  <p id="loginMsg"></p>
+</section>
+
+<section id="appSection" style="display:none;">
+  <div id="totalTALA">Total TALA: 0</div>
+  <div class="social-container">
+    <div>
+      <img class="social-btn" src="https://s6.uupload.ir/files/1761565805692_xev1.png" onclick="earnTALA('YouTube')" alt="YouTube">
+      <div class="reward">+1 TALA</div>
+    </div>
+    <div>
+      <img class="social-btn" src="https://s6.uupload.ir/files/1761566178319_vj8h.png" onclick="earnTALA('Instagram')" alt="Instagram">
+      <div class="reward">+0.5 TALA</div>
+    </div>
+    <div>
+      <img class="social-btn" src="https://s6.uupload.ir/files/1761565929838_lcd7.png" onclick="earnTALA('TikTok')" alt="TikTok">
+      <div class="reward">+0.5 TALA</div>
+    </div>
+    <div>
+      <img class="social-btn" src="https://s6.uupload.ir/files/1761566122776_0xlc.png" onclick="earnTALA('Telegram')" alt="Telegram">
+      <div class="reward">+0.5 TALA</div>
+    </div>
+    <div>
+      <img class="social-btn" src="https://s6.uupload.ir/files/1761565975760_37uu.png" onclick="earnTALA('X')" alt="X">
+      <div class="reward">+0.5 TALA</div>
+    </div>
+  </div>
+  <button id="walletBtn" disabled>Connect Wallet (Coming Soon)</button>
+</section>
+
+<script>
+let userTALA = 0;
+
+function loginUser() {
+  const email = document.getElementById('email').value.trim();
+  const pwd = document.getElementById('password').value.trim();
+  const msg = document.getElementById('loginMsg');
+  if(email && pwd) {
+    document.getElementById('loginSection').style.display = 'none';
+    document.getElementById('appSection').style.display = 'block';
+    msg.textContent = '';
+  } else {
+    msg.textContent = 'Please enter valid email and password.';
+  }
+}
+
+function earnTALA(platform) {
+  let reward = 0;
+  switch(platform) {
+    case 'YouTube': reward = 1; break;
+    case 'Instagram': 
+    case 'TikTok': 
+    case 'Telegram': 
+    case 'X': reward = 0.5; break;
+  }
+  userTALA += reward;
+  document.getElementById('totalTALA').textContent = `Total TALA: ${userTALA}`;
+  alert(`You earned ${reward} TALA for ${platform} mission!`);
+}
+</script>
+
+</body>
+</html>
